@@ -228,6 +228,49 @@ nav a:hover {
         let currentSlide =48;
         const totalProducts = 82; // Total de productos (camisas)
         const cart = [];
+        let startX = 0;
+let endX = 0;
+let isTouching = false; // Para evitar múltiples eventos de deslizamiento
+
+// Función para agregar los eventos táctiles
+function addTouchEvents() {
+    const carousel = document.querySelector('.carousel');
+
+    carousel.addEventListener('touchstart', (e) => {
+        // Guardamos la posición inicial del toque
+        startX = e.changedTouches[0].screenX;
+        isTouching = true;
+    });
+
+    carousel.addEventListener('touchmove', (e) => {
+        // Aseguramos que solo se mueve si es un deslizamiento horizontal
+        if (!isTouching) return;
+        endX = e.changedTouches[0].screenX;
+    });
+
+    carousel.addEventListener('touchend', () => {
+        if (isTouching) {
+            // Calcular la dirección del deslizamiento
+            if (startX - endX > 50) {
+                // Deslizamiento hacia la izquierda (mover el carrusel a la derecha)
+                moveSlide(getItemsPerPage());
+            } else if (endX - startX > 50) {
+                // Deslizamiento hacia la derecha (mover el carrusel a la izquierda)
+                moveSlide(-getItemsPerPage());
+            }
+            isTouching = false;
+        }
+    });
+}
+
+// Llamar a la función para agregar los eventos táctiles después de que la página haya cargado
+document.addEventListener('DOMContentLoaded', () => {
+    // Agregar los eventos táctiles
+    addTouchEvents();
+
+    // Los demás eventos ya existen, como agregar productos al carrito y generar carrusel
+    generateCarouselItems();
+});
 
         // Función para agregar las imágenes del carrusel
         function generateCarouselItems() {
