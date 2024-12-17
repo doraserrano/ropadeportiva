@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda Ropa Deportiva</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header .logo h1 {
+            font-size: 2rem;
+        }
+
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        .carousel {
+            position: relative;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Contenedor para las imágenes del carrusel */
+        .carousel-container {
+            display: flex;
+            transition: transform 0.5s ease-in-out; /* Transición suave */
+        }
+
+        /* Estilo de cada item del carrusel */
+        .carousel-item {
+            text-align: center;
+            flex: 0 0 auto; /* Asegura que los elementos no se estiren */
+            margin: 0 10px;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: auto;
+            max-width: 300px; /* Tamaño máximo de la imagen */
+            object-fit: cover;
+            opacity: 0; /* Comienza con opacidad 0, se hace visible después de cargarse */
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        button.add-to-cart {
+            margin-top: 10px;
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        button.add-to-cart:hover {
+            background-color: #0056b3;
+        }
+
+        /* Botones de navegación */
+        button.prev, button.next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        button.prev {
+            left: 10px;
+        }
+
+        button.next {
+            right: 10px;
+        }
+
+        /* Estilo del carrito */
+        .cart-summary {
+            margin-top: 40px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #cart-list {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        #cart-list li {
+            margin: 10px 0;
+        }
+
+        #whatsapp-link {
+            display: inline-block;
+            background-color: #25D366;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        #whatsapp-link:hover {
+            background-color: #128C7E;
+        }
+
+        /* Media Queries para adaptabilidad */
+        @media (min-width: 600px) {
+            .carousel-container {
+                grid-template-columns: repeat(2, 1fr); /* Dos columnas para tabletas */
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .carousel-container {
+                grid-template-columns: repeat(3, 1fr); /* Tres columnas para pantallas grandes */
+            }
+        }
+
+        @media (min-width: 1400px) {
+            .carousel-container {
+                grid-template-columns: repeat(4, 1fr); /* Cuatro columnas en pantallas muy grandes */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>Tienda SportWear</h1>
+        </div>
+        <nav>
+            <a href="#">Inicio</a>
+            <a href="#">Productos</a>
+            <a href="#">Carrito <span id="cart-count">0</span></a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="carousel">
+            <div class="carousel-container" id="carousel-container">
+                <!-- Las imágenes se generarán aquí mediante JavaScript -->
+            </div>
+            <button class="prev" onclick="moveSlide(-getItemsPerPage())">&#10094;</button>
+            <button class="next" onclick="moveSlide(getItemsPerPage())">&#10095;</button>
+        </section>
+
+        <section class="cart-summary">
+            <h2>Resumen del carrito</h2>
+            <ul id="cart-list"></ul>
+            <a id="whatsapp-link" href="" target="_blank">Enviar carrito por WhatsApp</a>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Tienda SportWear</p>
+    </footer>
+
+    <script>
+        let currentSlide = 50;
+        const totalProducts = 82; // Total de productos (camisas)
+        const cart = [];
+
+        // Función para agregar las imágenes del carrusel
+        function generateCarouselItems() {
+            const container = document.getElementById('carousel-container');
+            for (let i = 1; i <= totalProducts; i++) {
+                const item = document.createElement('div');
+                item.classList.add('carousel-item');
+                item.innerHTML = `
+                    <img data-src="/img/camisa (${i}).jpg" alt="Camisa ${i}" class="lazy-load">
+                    <h3>Camisa Deportiva ${i}</h3>
+                    <p>$${(29.99 + i * 0.5).toFixed(2)}</p>
+                    <button class="add-to-cart" data-product="Camisa Deportiva ${i}" data-price="${(29.99 + i * 0.5).toFixed(2)}">Agregar al carrito</button>
+                `;
+                container.appendChild(item);
+            }
+
+            // Inicializamos el carrusel con las imágenes
+            updateCarousel();
+
+            // Iniciar carga perezosa
+            lazyLoadImages();
+        }
+
+        // Función para mover el carrusel
+        function moveSlide(direction) {
+            currentSlide = (currentSlide - direction*4 ) ;
+            updateCarousel();
+        }
+
+        // Actualizar la visibilidad del carrusel
+        function updateCarousel() {
+            const items = document.querySelectorAll('.carousel-item');
+            const itemsPerPage = getItemsPerPage();
+            const carouselContainer = document.getElementById('carousel-container');
+
+            // Se calcula la posición de desplazamiento y se aplica
+            const newTransformValue = currentSlide ; // Desplazamiento calculado en porcentaje
+            console.log(newTransformValue);
+
+            carouselContainer.style.transform = `translateX(${newTransformValue}%)`;
+        }
+
+        // Calcular cuántas imágenes mostrar según el tamaño de la pantalla
+        function getItemsPerPage() {
+            const width = window.innerWidth;
+            if (width >= 1400) return 4;
+            if (width >= 1024) return 3;
+            if (width >= 600) return 2;
+            return 1; // En pantallas pequeñas
+        }
+
+        // Función de carga perezosa para imágenes
+        function lazyLoadImages() {
+            const images = document.querySelectorAll('.lazy-load');
+
+            // Usamos el IntersectionObserver para cargar las imágenes cuando estén en la vista
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.getAttribute('data-src'); // Establecemos el src de la imagen
+                        img.onload = () => img.style.opacity = 1; // Hacemos la imagen visible cuando se carga
+                        observer.unobserve(img); // Deja de observar esta imagen
+                    }
+                });
+            }, {
+                rootMargin: '0px',
+                threshold: 0.1 // La imagen se carga cuando está al 10% visible
+            });
+
+            images.forEach(img => observer.observe(img));
+        }
+
+        // Agregar productos al carrito
+        function addToCart(event) {
+            const product = event.target.getAttribute('data-product');
+            const price = event.target.getAttribute('data-price');
+            
+            // Agregar al carrito
+            cart.push({ product, price });
+            
+            // Actualizar el contador en el carrito
+            document.getElementById('cart-count').innerText = cart.length;
+
+            // Mostrar productos en el carrito
+            const cartList = document.getElementById('cart-list');
+            const cartItem = document.createElement('li');
+            cartItem.textContent = `${product} - $${price}`;
+            cartList.appendChild(cartItem);
+
+            // Actualizar el enlace de WhatsApp
+            const whatsappLink = document.getElementById('whatsapp-link');
+            const cartMessage = cart.map(item => `${item.product} - $${item.price}`).join('%0A');
+            whatsappLink.href = `https://wa.me/573044469689?text=Carrito:%0A${cartMessage}`;
+        }
+
+        // Agregar los eventos a los botones de agregar al carrito
+        document.addEventListener('DOMContentLoaded', () => {
+            // Generar los productos dinámicamente
+            generateCarouselItems();
+
+            // Agregar los eventos a los botones de agregar al carrito
+            const buttons = document.querySelectorAll('.add-to-cart');
+            buttons.forEach(button => {
+                button.addEventListener('click', addToCart);
+            });
+
+            // Actualizar el carrusel cuando se cambie el tamaño de la pantalla
+            window.addEventListener('resize', updateCarousel);
+        });
+    </script>
+</body>
+</html>
