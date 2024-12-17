@@ -28,9 +28,9 @@ header {
 }
 
 header .logo h1 {
-    font-size: 3rem;
+    font-size: 2rem;
     font-family: 'Russo One', sans-serif;
-    font-weight: 600;
+    font-weight: 500;
     color: #FFD700; /* Color dorado para resaltar */
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -172,24 +172,7 @@ nav a:hover {
             background-color: #128C7E;
         }
 
-        /* Media Queries para adaptabilidad */
-        @media (min-width: 600px) {
-            .carousel-container {
-                grid-template-columns: repeat(2, 1fr); /* Dos columnas para tabletas */
-            }
-        }
 
-        @media (min-width: 1024px) {
-            .carousel-container {
-                grid-template-columns: repeat(3, 1fr); /* Tres columnas para pantallas grandes */
-            }
-        }
-
-        @media (min-width: 1400px) {
-            .carousel-container {
-                grid-template-columns: repeat(4, 1fr); /* Cuatro columnas en pantallas muy grandes */
-            }
-        }
     </style>
 </head>
 <body>
@@ -225,52 +208,10 @@ nav a:hover {
     </footer>
 
     <script>
-        let currentSlide =48;
+        let currentSlide =49;
         const totalProducts = 82; // Total de productos (camisas)
         const cart = [];
-        let startX = 0;
-let endX = 0;
-let isTouching = false; // Para evitar múltiples eventos de deslizamiento
-
-// Función para agregar los eventos táctiles
-function addTouchEvents() {
-    const carousel = document.querySelector('.carousel');
-
-    carousel.addEventListener('touchstart', (e) => {
-        // Guardamos la posición inicial del toque
-        startX = e.changedTouches[0].screenX;
-        isTouching = true;
-    });
-
-    carousel.addEventListener('touchmove', (e) => {
-        // Aseguramos que solo se mueve si es un deslizamiento horizontal
-        if (!isTouching) return;
-        endX = e.changedTouches[0].screenX;
-    });
-
-    carousel.addEventListener('touchend', () => {
-        if (isTouching) {
-            // Calcular la dirección del deslizamiento
-            if (startX - endX > 50) {
-                // Deslizamiento hacia la izquierda (mover el carrusel a la derecha)
-                moveSlide(getItemsPerPage());
-            } else if (endX - startX > 50) {
-                // Deslizamiento hacia la derecha (mover el carrusel a la izquierda)
-                moveSlide(-getItemsPerPage());
-            }
-            isTouching = false;
-        }
-    });
-}
-
-// Llamar a la función para agregar los eventos táctiles después de que la página haya cargado
-document.addEventListener('DOMContentLoaded', () => {
-    // Agregar los eventos táctiles
-    addTouchEvents();
-
-    // Los demás eventos ya existen, como agregar productos al carrito y generar carrusel
-    generateCarouselItems();
-});
+let isMoving = false;  // Variable para evitar el doble clic
 
         // Función para agregar las imágenes del carrusel
         function generateCarouselItems() {
@@ -296,9 +237,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Función para mover el carrusel
         function moveSlide(direction) {
-            currentSlide = (currentSlide - direction*4 ) ;
-            updateCarousel();
-        }
+    if (isMoving) return;  // Si el carrusel ya se está moviendo, ignoramos el clic
+
+    isMoving = true;  // Bloqueamos la función mientras el carrusel se mueve
+
+    if (direction < 0) {
+        direction = Math.floor(direction);
+    }
+
+    console.log(direction);
+
+    // Actualizamos la posición actual del carrusel
+    currentSlide = (currentSlide - Math.ceil(direction) * 1.8);
+
+    // Actualizamos la visualización del carrusel
+    updateCarousel();
+
+    // Después de que el carrusel se haya movido, desbloqueamos el clic
+    setTimeout(() => {
+        isMoving = false;
+    }, 300);  // El intervalo de bloqueo puede ser ajustado, en este caso 300ms
+}
 
         // Actualizar la visibilidad del carrusel
         function updateCarousel() {
@@ -308,7 +267,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Se calcula la posición de desplazamiento y se aplica
             const newTransformValue = currentSlide ; // Desplazamiento calculado en porcentaje
-            console.log(newTransformValue);
 
             carouselContainer.style.transform = `translateX(${newTransformValue}%)`;
         }
@@ -364,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Actualizar el enlace de WhatsApp
             const whatsappLink = document.getElementById('whatsapp-link');
             const cartMessage = cart.map(item => `${item.product} - $${item.price}`).join('%0A');
-            whatsappLink.href = `https://wa.me/5731750293126?text=Carrito:%0A${cartMessage}`;
+            whatsappLink.href = `https://wa.me/573044469689?text=Carrito:%0A${cartMessage}`;
         }
 
         // Agregar los eventos a los botones de agregar al carrito
@@ -381,6 +339,51 @@ document.addEventListener('DOMContentLoaded', () => {
             // Actualizar el carrusel cuando se cambie el tamaño de la pantalla
             window.addEventListener('resize', updateCarousel);
         });
+
+        let startX = 0;
+let endX = 0;
+let isTouching = false; // Para evitar múltiples eventos de deslizamiento
+
+// Función para agregar los eventos táctiles
+function addTouchEvents() {
+    const carousel = document.querySelector('.carousel');
+
+    carousel.addEventListener('touchstart', (e) => {
+        // Guardamos la posición inicial del toque
+        startX = e.changedTouches[0].screenX;
+        isTouching = true;
+    });
+
+    carousel.addEventListener('touchmove', (e) => {
+        // Aseguramos que solo se mueve si es un deslizamiento horizontal
+        if (!isTouching) return;
+        endX = e.changedTouches[0].screenX;
+    });
+
+    carousel.addEventListener('touchend', () => {
+        if (isTouching) {
+            // Calcular la dirección del deslizamiento
+            if (startX - endX > 50) {
+                // Deslizamiento hacia la izquierda (mover el carrusel a la derecha)
+                moveSlide(0.46);
+            } else if (endX - startX > 50) {
+                // Deslizamiento hacia la derecha (mover el carrusel a la izquierda)
+                moveSlide(-0.46                );
+            }
+            isTouching = false;
+        }
+    });
+}
+
+// Llamar a la función para agregar los eventos táctiles después de que la página haya cargado
+document.addEventListener('DOMContentLoaded', () => {
+    // Agregar los eventos táctiles
+    addTouchEvents();
+
+    // Los demás eventos ya existen, como agregar productos al carrito y generar carrusel
+    generateCarouselItems();
+});
+
     </script>
 </body>
 </html>
