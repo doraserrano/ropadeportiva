@@ -5,34 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tienda Ropa Deportiva</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+/* Fuente personalizada */
+@import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap'); /* Fuente deportiva */
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        header {
-            background-color: #333;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
 
-        header .logo h1 {
-            font-size: 2rem;
-        }
+/* Estilo del header */
+header {
+    background-color: #333;
+    color: white;
+    padding: 40px 20px;
+    text-align: center;
+}
 
-        nav a {
-            color: white;
-            margin: 0 15px;
-            text-decoration: none;
-            font-size: 1.2rem;
-        }
+header .logo h1 {
+    font-size: 3rem;
+    font-family: 'Russo One', sans-serif;
+    font-weight: 600;
+    color: #FFD700; /* Color dorado para resaltar */
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3); /* Sombra sutil */
+    animation: slideIn 1.5s ease-out; /* Animación de deslizamiento */
+}
+
+header .logo h1 .highlight {
+    color: #ff6347; /* Rojo tomate para el nombre "Serrano´s Sports" */
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3); /* Mismo estilo de sombra */
+}
+
+/* Animación de deslizamiento del texto */
+@keyframes slideIn {
+    from {
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Estilo del menú de navegación */
+nav a {
+    color: white;
+    margin: 0 15px;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: #FFD700; /* Cambia el color al pasar el mouse */
+}
+
+
 
         main {
             padding: 20px;
@@ -158,7 +195,7 @@
 <body>
     <header>
         <div class="logo">
-            <h1>Tienda SportWear</h1>
+            <h1>Tienda de Ropa Serrano´s Sports</h1>
         </div>
         <nav>
             <a href="#">Inicio</a>
@@ -184,7 +221,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2024 Tienda SportWear</p>
+        <p>&copy; 2024 Tienda Serrano´s Sports</p>
     </footer>
 
     <script>
@@ -284,7 +321,7 @@
             // Actualizar el enlace de WhatsApp
             const whatsappLink = document.getElementById('whatsapp-link');
             const cartMessage = cart.map(item => `${item.product} - $${item.price}`).join('%0A');
-            whatsappLink.href = `https://wa.me/573044469689?text=Carrito:%0A${cartMessage}`;
+            whatsappLink.href = `https://wa.me/5731750293126?text=Carrito:%0A${cartMessage}`;
         }
 
         // Agregar los eventos a los botones de agregar al carrito
